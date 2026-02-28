@@ -3,7 +3,6 @@ from app.routes import user_routes
 from app.db.session import engine, Base
 
 # Esto crea las tablas en la base de datos si no existen
-# En un entorno de producción estricto se usaría Alembic, pero para este challenge es suficiente
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
