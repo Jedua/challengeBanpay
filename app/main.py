@@ -2,9 +2,6 @@ from fastapi import FastAPI
 from app.routes import user_routes
 from app.db.session import engine, Base
 
-# Esto crea las tablas en la base de datos si no existen
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(
     title="Banpay Challenge API",
     description="API REST de usuarios con integracion a Studio Ghibli",
