@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routes import user_routes, ghibli_routes
+from app.routes import user_routes, ghibli_routes, auth_routes
 from app.db.session import engine, Base
 
 app = FastAPI(
@@ -9,6 +9,7 @@ app = FastAPI(
 )
 
 # Registramos las rutas de usuarios
+app.include_router(auth_routes.router)
 app.include_router(user_routes.router)
 app.include_router(ghibli_routes.router)
 
