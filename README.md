@@ -22,7 +22,7 @@ API REST robusta desarrollada con FastAPI para la gestión de usuarios, implemen
 Sigue estos pasos para levantar la infraestructura de la API:
 
 1. **Clonar el repositorio:**
-   git clone https://github.com/Jedua/challengeBanpay.git
+   git clone https://github.com/Jedua/challengeBanpay.git 
    cd challengeBanpay
 
 2. **Configurar el entorno:**

@@ -8,7 +8,7 @@ app = FastAPI(
     version="1.0.1"
 )
 
-# Registramos las rutas de usuarios
+# Registramos las rutas
 app.include_router(auth_routes.router)
 app.include_router(user_routes.router)
 app.include_router(ghibli_routes.router)

@@ -22,7 +22,7 @@ def fetch_data_by_role(role: str):
     url = f"{BASE_URL}{endpoint}"
     
     try:
-        # El timeout es vital en integraciones de produccion
+        # El timeout es vital en integraciones
         response = requests.get(url, timeout=10)
         response.raise_for_status()
         return response.json()

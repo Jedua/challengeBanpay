@@ -12,25 +12,21 @@ router = APIRouter(prefix="/users", tags=["Users"])
 def create_admin_user(
     user: UserCreate, 
     db: Session = Depends(get_db),
-    # Proteccion: Solo un admin autenticado puede usar esta ruta
     current_admin: User = Depends(get_admin_user) 
 ):
     """
     Endpoint exclusivo para que un Administrador cree a otros Administradores.
     """
-    # Verificamos que no exista el correo
     db_user = user_service.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="El email ya esta registrado")
         
-    # Forzamos el rol a admin por seguridad, sin importar lo que mande en el JSON
     user.role = "admin" 
     
     return user_service.create_user(db=db, user=user)
 
 @router.post("/", response_model=User, status_code=status.HTTP_201_CREATED)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    # Validacion de seguridad: Evitar escalada de privilegios
     if user.role.value == "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -44,8 +40,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=list[User])
 def read_users(
-    db: Session = Depends(get_db), 
-    # Solo los ADMIN pueden ver la lista completa
+    db: Session = Depends(get_db),
     current_admin: User = Depends(get_admin_user) 
 ):
     return user_service.get_users(db)
@@ -54,7 +49,6 @@ def read_users(
 def read_user(
     user_id: int, 
     db: Session = Depends(get_db),
-    # Solo los ADMIN pueden ver a un usuario especifico por ID
     current_admin: User = Depends(get_admin_user)
 ):
     db_user = user_service.get_user(db, user_id=user_id)
@@ -67,7 +61,6 @@ def update_user(
     user_id: int, 
     user_update: UserUpdate, 
     db: Session = Depends(get_db),
-    # Solo los ADMIN pueden editar a otros usuarios
     current_admin: User = Depends(get_admin_user) 
 ):
     db_user = user_service.get_user(db, user_id=user_id)
@@ -79,7 +72,6 @@ def update_user(
 def delete_user(
     user_id: int, 
     db: Session = Depends(get_db),
-    # Solo los ADMIN pueden borrar usuarios
     current_admin: User = Depends(get_admin_user) 
 ):
     db_user = user_service.get_user(db, user_id=user_id)
