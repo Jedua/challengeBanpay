@@ -8,6 +8,26 @@ from app.core.security import get_current_user, get_admin_user
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
+@router.post("/admin", response_model=User, status_code=status.HTTP_201_CREATED)
+def create_admin_user(
+    user: UserCreate, 
+    db: Session = Depends(get_db),
+    # Proteccion: Solo un admin autenticado puede usar esta ruta
+    current_admin: User = Depends(get_admin_user) 
+):
+    """
+    Endpoint exclusivo para que un Administrador cree a otros Administradores.
+    """
+    # Verificamos que no exista el correo
+    db_user = user_service.get_user_by_email(db, email=user.email)
+    if db_user:
+        raise HTTPException(status_code=400, detail="El email ya esta registrado")
+        
+    # Forzamos el rol a admin por seguridad, sin importar lo que mande en el JSON
+    user.role = "admin" 
+    
+    return user_service.create_user(db=db, user=user)
+
 @router.post("/", response_model=User, status_code=status.HTTP_201_CREATED)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     # Validacion de seguridad: Evitar escalada de privilegios
