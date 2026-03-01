@@ -1,0 +1,29 @@
+# Ambientes virtuales
+venv/
+env/
+.venv/
+
+# Variables de entorno y secretos (Crítico para seguridad)
+.env
+.env.local
+
+# Archivos compilados de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caché de pruebas y tipado
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+.tox/
+
+# Archivos del sistema operativo y editores
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Bases de datos locales
+*.sqlite3
