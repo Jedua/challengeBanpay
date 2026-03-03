@@ -1,6 +1,7 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from app.models.user import User
-from app.schemas.user import UserCreate, UserUpdate
+from app.schemas.user import UserCreate, UserUpdate, UserUpdateMe
 from app.core.security import get_password_hash
 
 def get_user(db: Session, user_id: int):
@@ -41,6 +42,27 @@ def update_user(db: Session, db_user: User, user_update: UserUpdate):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def update_own_profile(db: Session, current_user: User, user_in: UserUpdateMe) -> User:
+    if user_in.email and user_in.email != current_user.email:
+        existing_user = get_user_by_email(db, email=user_in.email)
+        if existing_user:
+            raise HTTPException(status_code=400, detail="El email ya esta registrado")
+
+    update_data = user_in.model_dump(exclude_unset=True) 
+    
+    if "password" in update_data:
+        update_data["hashed_password"] = get_password_hash(update_data["password"])
+        del update_data["password"]
+
+    for field, value in update_data.items():
+        setattr(current_user, field, value)
+        
+    db.add(current_user)
+    db.commit()
+    db.refresh(current_user)
+    
+    return current_user
 
 def delete_user(db: Session, db_user: User):
     db.delete(db_user)

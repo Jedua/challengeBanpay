@@ -11,6 +11,9 @@ router = APIRouter(tags=["Autenticacion"])
 
 @router.post("/login")
 def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
+    """
+    Autentica a un usuario y genera un token de acceso JWT.
+    """
     user = get_user_by_username(db, username=form_data.username)
     if not user:
         raise HTTPException(
@@ -31,4 +34,4 @@ def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2Passw
         data={"sub": user.username, "role": user.role.value}, expires_delta=access_token_expires
     )
     
-    return {"access_token": access_token, "token_type": "bearer"} # nosec B105
+    return {"access_token": access_token, "token_type": "bearer"}  # nosec B105
