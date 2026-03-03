@@ -57,3 +57,11 @@ Una vez levantado el proyecto, la documentación interactiva estará disponible 
 
 Para verificar la integridad del código, puedes correr la auditoría de seguridad integrada en el contenedor:
 docker exec -it challengebanpay-api-1 bandit -r app/
+
+## Roadmap y Trabajo Futuro (Propuestas de Escalabilidad)
+
+Para evolucionar esta API hacia un entorno de producción de alta criticidad financiera, se proponen las siguientes mejoras:
+
+1. **Multi-Factor Authentication (MFA):** Implementación de verificación en dos pasos (TOTP vía Google Authenticator/Authy) en el flujo de `/login` para mitigar riesgos de credenciales comprometidas.
+2. **Rate Limiting:** Agregar middlewares para limitar la cantidad de peticiones por minuto por IP/Usuario, previniendo ataques de fuerza bruta o saturación (DDoS).
+3. **Caché en Redis:** Guardar temporalmente las respuestas de la API de Studio Ghibli para reducir la latencia y evitar exceder los límites de consumo del proveedor externo.
